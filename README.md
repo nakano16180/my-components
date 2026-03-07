@@ -1,7 +1,7 @@
 # Evil Charts Demo
 
-`feat/evil_charts` ブランチ向けの単一ページデモです。  
-Recharts と shadcn/ui ベースの `HighlightedBarChart` を表示します。
+`feat/evil_charts` ブランチ向けのデモです。  
+`App` 上で `dashboard` / `chart demo` を切り替えできます。
 
 ## セットアップ
 
@@ -15,7 +15,8 @@ npm install
 npm run dev
 ```
 
-ブラウザで表示後、棒グラフをホバーすると次が確認できます。
+ブラウザで表示後、ヘッダーのトグルで `Chart Demo` に切り替えると、
+棒グラフで次が確認できます。
 
 - 対象バーのみ強調表示（他バーは減光）
 - カード上部の月/値がホバー対象に追従
@@ -31,7 +32,7 @@ npm run lint
 ## 既知の制約
 
 - データはコンポーネント内の固定配列（API 連携なし）
-- 現在は単一チャートのみのデモ構成
+- データは固定配列で、永続化や外部状態管理は未対応
 
 ## 今後の拡張候補
 
