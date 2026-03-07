@@ -12,11 +12,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import type { ChartConfig } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 
 const chartData = [
@@ -90,7 +90,7 @@ export function HighlightedBarChart() {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value: string) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
