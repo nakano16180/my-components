@@ -1,4 +1,6 @@
+import type { ViewMode } from "@/App"
 import { AppSidebar } from "@/components/app-sidebar"
+import { HighlightedBarChart } from "@/components/ui/highlighted-bar-chart"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,10 +16,17 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 
-export default function Page() {
+type PageProps = {
+  view: ViewMode
+  onViewChange: (view: ViewMode) => void
+}
+
+export default function Page({ view, onViewChange }: PageProps) {
+  const isChartView = view === "chart"
+
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar view={view} onViewChange={onViewChange} />
       <SidebarInset>
         <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger className="-ml-1" />
@@ -26,24 +35,41 @@ export default function Page() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  Building Your Application
+                  {isChartView ? "Demos" : "Building Your Application"}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                <BreadcrumbPage>
+                  {isChartView ? "Chart Demo" : "Data Fetching"}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {Array.from({ length: 24 }).map((_, index) => (
-            <div
-              key={index}
-              className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
-            />
-          ))}
-        </div>
+        {isChartView ? (
+          <main className="mx-auto w-full max-w-[960px] p-4 md:p-8">
+            <div className="mb-4">
+              <p className="text-muted-foreground text-xs tracking-[0.08em] uppercase">
+                Evil Charts Demo
+              </p>
+              <h1 className="text-2xl font-semibold">Highlighted Bar Chart</h1>
+              <p className="text-muted-foreground text-sm">
+                Hover a bar to focus one month and inspect values.
+              </p>
+            </div>
+            <HighlightedBarChart />
+          </main>
+        ) : (
+          <div className="flex flex-1 flex-col gap-4 p-4">
+            {Array.from({ length: 24 }).map((_, index) => (
+              <div
+                key={index}
+                className="bg-muted/50 aspect-video h-12 w-full rounded-lg"
+              />
+            ))}
+          </div>
+        )}
       </SidebarInset>
     </SidebarProvider>
   )
