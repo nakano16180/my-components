@@ -1,8 +1,8 @@
-import Page from '@/app/dashboard/page'
+import Page from "@/app/dashboard/page"
 
 function App() {
   return (
-    <Page/>
+    <Page />
   )
 }
 
