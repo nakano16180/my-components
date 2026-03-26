@@ -1,6 +1,7 @@
 import * as React from "react"
 import { ChevronRight } from "lucide-react"
 
+import type { ViewMode } from "@/App"
 import { SearchForm } from "@/components/search-form"
 import { VersionSwitcher } from "@/components/version-switcher"
 import {
@@ -163,7 +164,16 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  view: ViewMode
+  onViewChange: (view: ViewMode) => void
+}
+
+export function AppSidebar({
+  view,
+  onViewChange,
+  ...props
+}: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -174,6 +184,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SearchForm />
       </SidebarHeader>
       <SidebarContent className="gap-0">
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-sm">Demos</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={view === "dashboard"}
+                  onClick={() => onViewChange("dashboard")}
+                >
+                  Dashboard
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={view === "chart"}
+                  onClick={() => onViewChange("chart")}
+                >
+                  Chart Demo
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         {/* We create a collapsible SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <Collapsible
