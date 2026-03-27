@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { AppSidebar } from "@/components/app-sidebar"
+import { HighlightedBarChart } from "@/components/ui/highlighted-bar-chart"
 import { WidgetsContent } from "@/app/widgets/page"
 import {
   Breadcrumb,
@@ -17,7 +18,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const [activeView, setActiveView] = useState<"dashboard" | "widgets">("dashboard")
+  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets">("dashboard")
 
   return (
     <SidebarProvider>
@@ -30,13 +31,13 @@ export default function Page() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  {activeView === "dashboard" ? "Building Your Application" : "Wigggle UI"}
+                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : "Wigggle UI"}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {activeView === "dashboard" ? "Data Fetching" : "Widgets"}
+                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : "Widgets"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -51,6 +52,19 @@ export default function Page() {
               />
             ))}
           </div>
+        ) : activeView === "chart" ? (
+          <main className="mx-auto w-full max-w-[960px] p-4 md:p-8">
+            <div className="mb-4">
+              <p className="text-muted-foreground text-xs tracking-[0.08em] uppercase">
+                Evil Charts Demo
+              </p>
+              <h1 className="text-2xl font-semibold">Highlighted Bar Chart</h1>
+              <p className="text-muted-foreground text-sm">
+                Hover a bar to focus one month and inspect values.
+              </p>
+            </div>
+            <HighlightedBarChart />
+          </main>
         ) : (
           <div className="bg-muted/20 flex-1">
             <WidgetsContent />
