@@ -1,7 +1,6 @@
 import * as React from "react"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft } from "lucide-react"
 
-import type { ViewMode } from "@/App"
 import { SearchForm } from "@/components/search-form"
 import { VersionSwitcher } from "@/components/version-switcher"
 import {
@@ -165,15 +164,11 @@ const data = {
 }
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  view: ViewMode
-  onViewChange: (view: ViewMode) => void
+  activeView: "dashboard" | "chart" | "widgets"
+  onViewChange: (view: "dashboard" | "chart" | "widgets") => void
 }
 
-export function AppSidebar({
-  view,
-  onViewChange,
-  ...props
-}: AppSidebarProps) {
+export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -185,28 +180,42 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent className="gap-0">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sm">Demos</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sidebar-foreground text-sm">
+            Pages
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={view === "dashboard"}
+                  isActive={activeView === "dashboard"}
                   onClick={() => onViewChange("dashboard")}
                 >
-                  Dashboard
+                  <LayoutDashboard />
+                  <span>Dashboard</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  isActive={view === "chart"}
+                  isActive={activeView === "chart"}
                   onClick={() => onViewChange("chart")}
                 >
-                  Chart Demo
+                  <BarChart2 />
+                  <span>Chart Demo</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeView === "widgets"}
+                  onClick={() => onViewChange("widgets")}
+                >
+                  <PanelsTopLeft />
+                  <span>Wigggle Widgets</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
         {/* We create a collapsible SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <Collapsible
