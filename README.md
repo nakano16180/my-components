@@ -1,41 +1,50 @@
-# Evil Charts Demo
+# my-components
 
-`feat/evil_charts` ブランチ向けのデモです。  
-`App` 上で `dashboard` / `chart demo` を切り替えできます。
+React + shadcn/ui のコンポーネントを試作・確認するためのプレイグラウンドです。  
+サイドバーのナビゲーションで **Dashboard / Chart Demo / Wigggle Widgets** の3ビューを切り替えられます。
+
+## 技術スタック
+
+| | |
+|---|---|
+| フレームワーク | React 19 + TypeScript |
+| ビルド | Vite |
+| スタイル | Tailwind CSS v4（CSS-first 設定） |
+| UIコンポーネント | shadcn/ui（new-york スタイル） |
+| チャート | Recharts |
+| アイコン | lucide-react |
 
 ## セットアップ
 
 ```bash
 npm install
-```
-
-## 実行
-
-```bash
 npm run dev
 ```
 
-ブラウザで表示後、ヘッダーのトグルで `Chart Demo` に切り替えると、
-棒グラフで次が確認できます。
-
-- 対象バーのみ強調表示（他バーは減光）
-- カード上部の月/値がホバー対象に追従
-- Tooltip に値が表示
-
-## 品質チェック
+## コマンド
 
 ```bash
-npm run build
-npm run lint
+npm run dev      # 開発サーバー起動
+npm run build    # 型チェック + プロダクションビルド
+npm run lint     # ESLint
+npm run knip     # 未使用エクスポート・依存関係の検出
+npm run preview  # プロダクションビルドのプレビュー
 ```
 
-## 既知の制約
+## ビュー一覧
 
-- データはコンポーネント内の固定配列（API 連携なし）
-- データは固定配列で、永続化や外部状態管理は未対応
+### Dashboard
+プレースホルダーカードを並べたレイアウト確認用ビュー。
 
-## 今後の拡張候補
+### Chart Demo
+インタラクティブな棒グラフ（`HighlightedBarChart`）のデモ。
+- ホバーしたバーのみ強調表示（他バーは減光）
+- カードヘッダーの月・値がホバー対象に追従
+- Tooltip に値を表示
 
-- API または JSON からのデータ注入
-- 期間フィルタ・系列切替
-- 複数チャート（line/area/pie）への展開
+### Wigggle Widgets
+コピー&ペーストで使えるウィジェット集。
+- Live Clock（1秒ごとに更新）
+- Monthly Calendar
+- Weather Snapshot
+- Stock Pulse
