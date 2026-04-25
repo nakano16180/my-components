@@ -2,6 +2,7 @@ import { useState } from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { HighlightedBarChart } from "@/components/ui/highlighted-bar-chart"
 import { WidgetsContent } from "@/app/widgets/page"
+import FlowPage from "@/app/flow/page"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets">("dashboard")
+  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "flow">("dashboard")
 
   return (
     <SidebarProvider>
@@ -31,13 +32,13 @@ export default function Page() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : "Wigggle UI"}
+                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : "Wigggle UI"}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : "Widgets"}
+                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : "Widgets"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -65,6 +66,8 @@ export default function Page() {
             </div>
             <HighlightedBarChart />
           </main>
+        ) : activeView === "flow" ? (
+          <FlowPage />
         ) : (
           <div className="bg-muted/20 flex-1">
             <WidgetsContent />
