@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft } from "lucide-react"
+import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft, LayoutTemplate } from "lucide-react"
 
 import { SearchForm } from "@/components/search-form"
 import { VersionSwitcher } from "@/components/version-switcher"
@@ -164,8 +164,8 @@ const data = {
 }
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  activeView: "dashboard" | "chart" | "widgets"
-  onViewChange: (view: "dashboard" | "chart" | "widgets") => void
+  activeView: "dashboard" | "chart" | "widgets" | "tool-ui"
+  onViewChange: (view: "dashboard" | "chart" | "widgets" | "tool-ui") => void
 }
 
 export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarProps) {
@@ -210,6 +210,15 @@ export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarPro
                 >
                   <PanelsTopLeft />
                   <span>Wigggle Widgets</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeView === "tool-ui"}
+                  onClick={() => onViewChange("tool-ui")}
+                >
+                  <LayoutTemplate />
+                  <span>Tool UI</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
