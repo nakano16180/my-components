@@ -1,6 +1,5 @@
 import * as React from "react"
-import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft, Share2, BellRing } from "lucide-react"
-
+import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft, Bot, Share2, BellRing } from "lucide-react"
 import { SearchForm } from "@/components/search-form"
 import { VersionSwitcher } from "@/components/version-switcher"
 import {
@@ -164,8 +163,8 @@ const data = {
 }
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  activeView: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
-  onViewChange: (view: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast") => void
+  activeView: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui"
+  onViewChange: (view: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui") => void
 }
 
 export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarProps) {
@@ -228,6 +227,15 @@ export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarPro
                 >
                   <BellRing />
                   <span>Gooey Toast</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeView === "mcp-ui"}
+                  onClick={() => onViewChange("mcp-ui")}
+                >
+                  <Bot />
+                  <span>MCP-UI</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

@@ -4,6 +4,7 @@ import { HighlightedBarChart } from "@/components/ui/highlighted-bar-chart"
 import { WidgetsContent } from "@/app/widgets/page"
 import FlowPage from "@/app/flow/page"
 import { GooeyToastPage } from "@/app/gooey-toast/page"
+import { McpUiPage } from "@/app/mcp-ui/page"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,7 +21,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "flow" | "gooey-toast">("dashboard")
+  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "mcp-ui" | "flow" | "gooey-toast">("dashboard")
 
   return (
     <SidebarProvider>
@@ -33,13 +34,13 @@ export default function Page() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : activeView === "gooey-toast" ? "Playground" : "Wigggle UI"}
+                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : activeView === "gooey-toast" ? "Playground" : activeView === "widgets" ? "Wigggle UI" : "Docs"}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : "Widgets"}
+                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : activeView === "widgets" ? "Widgets" : "MCP-UI"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -73,10 +74,12 @@ export default function Page() {
           <div className="flex-1 overflow-auto">
             <GooeyToastPage />
           </div>
-        ) : (
+        ) : activeView === "widgets" ? (
           <div className="bg-muted/20 flex-1">
             <WidgetsContent />
           </div>
+        ) : (
+          <McpUiPage />
         )}
       </SidebarInset>
     </SidebarProvider>
