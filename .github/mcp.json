@@ -3,9 +3,7 @@
     "playwright": {
       "command": "npx",
       "args": [
-        "@playwright/mcp@latest",
-        "--executable-path",
-        "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+        "@playwright/mcp@latest"
       ]
     }
   }

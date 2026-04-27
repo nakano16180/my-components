@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { HighlightedBarChart } from "@/components/ui/highlighted-bar-chart"
 import { WidgetsContent } from "@/app/widgets/page"
 import FlowPage from "@/app/flow/page"
+import { GooeyToastPage } from "@/app/gooey-toast/page"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "flow">("dashboard")
+  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "flow" | "gooey-toast">("dashboard")
 
   return (
     <SidebarProvider>
@@ -32,13 +33,13 @@ export default function Page() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : "Wigggle UI"}
+                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : activeView === "gooey-toast" ? "Playground" : "Wigggle UI"}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : "Widgets"}
+                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : "Widgets"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -68,6 +69,10 @@ export default function Page() {
           </main>
         ) : activeView === "flow" ? (
           <FlowPage />
+        ) : activeView === "gooey-toast" ? (
+          <div className="flex-1 overflow-auto">
+            <GooeyToastPage />
+          </div>
         ) : (
           <div className="bg-muted/20 flex-1">
             <WidgetsContent />
