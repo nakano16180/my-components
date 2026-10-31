@@ -142,11 +142,3 @@ export function WidgetsContent() {
     </div>
   )
 }
-
-export default function WidgetsPage() {
-  return (
-    <main className="bg-muted/20 min-h-screen">
-      <WidgetsContent />
-    </main>
-  )
-}

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  // shadcn CLI が src/components/ui に置くプリミティブは、ページがまだ import していない
+  // 部品（CardFooter など）も含めて公開 API として export する。未使用 export では落とさない。
+  // ファイル自体がどこからも import されていない場合は、従来どおり knip が失敗する。
+  "ignoreIssues": {
+    "src/components/ui/**/*.{ts,tsx}": ["exports", "types"]
+  }
+}
