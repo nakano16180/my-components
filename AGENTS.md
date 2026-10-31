@@ -144,7 +144,7 @@ npm run dev       # http://127.0.0.1:5173
 npm run preview   # 本番ビルドの確認。既定ポート 4173
 ```
 
-各ページの PNG は CI の `screenshots` ジョブが artifact `page-screenshots` として残します。ローカルで同じものを撮る場合:
+CI の `screenshots` ジョブは、各ページの PNG を artifact `page-screenshots` として残します。これはレビューの補助です。UI を変えた PR では、下の「PR の規約」どおり、エージェントが本文へ画像を埋め込みます。同じ撮り方を手元で行う場合:
 
 ```bash
 npx playwright install chromium
@@ -154,14 +154,19 @@ npm run preview -- --host 127.0.0.1 --port 4173 --strictPort
 npm run screenshots   # screenshots/*.png
 ```
 
-`screenshots` はレビュー用です。ブランチ保護の必須チェックには `lint` / `build` / `knip` を使います。テストスイートはまだありません。
+`screenshots` ジョブはそのまま残します。ブランチ保護の必須チェックには `lint` / `build` / `knip` を使います。テストスイートはまだありません。
 
 ## PR の規約
 
 - **1 PR につき 1 デザイン。** 関係のないリファクタや依存の更新を混ぜません。
 - 対応する issue を本文で閉じます。`Closes #n` と書きます。
 - 参照した X の投稿 URL と投稿者（`@handle`）を本文に書きます。
-- 実装した画面のスクリーンショットを PR に添付します。CI の `page-screenshots` artifact もレビューに使えます。
+- **UI を変更または追加した PR を開くときも、更新するときも、エージェント自身がスクリーンショットを撮って PR 本文に埋め込む。**
+  - 対象は、その PR で変わったページと追加したページ。ページごとに 1 枚、短いキャプションを付ける。
+  - 開発サーバー（`npm run dev`、`http://127.0.0.1:5173`）かプレビュー（`npm run preview`、`http://127.0.0.1:4173`）を Playwright で開く。
+  - ビューポートはデスクトップ（1280×800）。見出しやチャートなど、そのページの内容が描画されてから撮る。
+  - 画像は PR 本文に直接置く。CI の `screenshots` ジョブが残す artifact `page-screenshots` は補助であり、本文の画像の代わりにはしない。
+  - UI 以外のファイルだけを変更する PR では、スクリーンショットを省いてよい。
 - タイトルは、追加するデザインが分かる名前にします。
 
 ## 出典とライセンス
