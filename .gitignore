@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Output of `npm run screenshots` (CI uploads this as an artifact)
+/screenshots/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
