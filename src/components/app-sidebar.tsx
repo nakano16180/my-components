@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft, Bot, Share2, BellRing } from "lucide-react"
+import { ChevronRight, LayoutDashboard, BarChart2, PanelsTopLeft, Bot, Share2, BellRing, LayoutTemplate } from "lucide-react"
 import { SearchForm } from "@/components/search-form"
 import { VersionSwitcher } from "@/components/version-switcher"
 import {
@@ -163,8 +163,8 @@ const data = {
 }
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  activeView: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui"
-  onViewChange: (view: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui") => void
+  activeView: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui" | "tool-ui"
+  onViewChange: (view: "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui" | "tool-ui") => void
 }
 
 export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarProps) {
@@ -236,6 +236,15 @@ export function AppSidebar({ activeView, onViewChange, ...props }: AppSidebarPro
                 >
                   <Bot />
                   <span>MCP-UI</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={activeView === "tool-ui"}
+                  onClick={() => onViewChange("tool-ui")}
+                >
+                  <LayoutTemplate />
+                  <span>Tool UI</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

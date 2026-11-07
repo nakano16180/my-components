@@ -4,6 +4,7 @@ import { HighlightedBarChart } from "@/components/ui/highlighted-bar-chart"
 import { WidgetsContent } from "@/app/widgets/page"
 import FlowPage from "@/app/flow/page"
 import { GooeyToastPage } from "@/app/gooey-toast/page"
+import ToolUiPage from "@/app/tool-ui/page"
 import { McpUiPage } from "@/app/mcp-ui/page"
 import {
   Breadcrumb,
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "mcp-ui" | "flow" | "gooey-toast">("dashboard")
+  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "mcp-ui" | "flow" | "gooey-toast" | "tool-ui">("dashboard")
 
   return (
     <SidebarProvider>
@@ -40,7 +41,7 @@ export default function Page() {
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : activeView === "widgets" ? "Widgets" : "MCP-UI"}
+                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : activeView === "widgets" ? "Widgets" : activeView === "tool-ui" ? "Tool UI" : "MCP-UI"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -77,6 +78,10 @@ export default function Page() {
         ) : activeView === "widgets" ? (
           <div className="bg-muted/20 flex-1">
             <WidgetsContent />
+          </div>
+        ) : activeView === "tool-ui" ? (
+          <div className="flex-1 overflow-auto">
+            <ToolUiPage />
           </div>
         ) : (
           <McpUiPage />

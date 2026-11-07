@@ -6,6 +6,12 @@ const outDir = process.env.SCREENSHOT_DIR ?? "screenshots"
 
 const views = [
   {
+    id: "tool-ui",
+    button: "Tool UI",
+    ready: (page) =>
+      page.getByRole("heading", { level: 1, name: "Tool UI", exact: true }).waitFor(),
+  },
+  {
     id: "dashboard",
     button: "Dashboard",
     ready: (page) =>
