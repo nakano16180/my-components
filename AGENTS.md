@@ -37,6 +37,8 @@ src/
     widgets/page.tsx       # WidgetsContent
     flow/page.tsx          # React Flow
     gooey-toast/page.tsx   # Gooey Toast
+    mcp-ui/page.tsx        # MCP-UI 調査ページ
+    tool-ui/page.tsx       # Tool UI 調査ページ
   components/
     app-sidebar.tsx        # サイドバー。Pages がビュー切替
     search-form.tsx
@@ -48,6 +50,7 @@ src/
     utils.ts               # cn()
 components.json            # shadcn CLI の設定
 knip.jsonc                 # 未使用 export の例外（ui プリミティブ）
+scripts/capture-pages.mjs   # スクリーンショットの対象・描画待ち条件
 .github/workflows/ci.yml   # lint / build / knip / screenshots
 ```
 
@@ -62,10 +65,10 @@ URL ルーターはありません。`react-router` も入っていません。�
 3. 表示中のビューは `src/app/dashboard/page.tsx` の `useState` で切り替える。
 4. `src/components/app-sidebar.tsx` が `activeView` と `onViewChange` を受け取り、Pages グループのボタンでビューを変える。
 
-ビュー ID は dashboard と sidebar の両方に、同じ文字列ユニオンで書きます。
+ビュー ID は dashboard の `useState` と、sidebar の `AppSidebarProps.activeView` / `onViewChange` の引数の計3か所に、同じ文字列ユニオンで書きます。
 
 ```ts
-type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
+type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui" | "tool-ui"
 ```
 
 | ID | サイドバー | 中身 |
@@ -75,12 +78,14 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
 | `widgets` | Wigggle Widgets | `WidgetsContent`（`src/app/widgets/page.tsx`） |
 | `flow` | React Flow | `src/app/flow/page.tsx` の default export |
 | `gooey-toast` | Gooey Toast | `GooeyToastPage`（`src/app/gooey-toast/page.tsx`） |
+| `mcp-ui` | MCP-UI | `McpUiPage`（`src/app/mcp-ui/page.tsx`） |
+| `tool-ui` | Tool UI | `src/app/tool-ui/page.tsx` の default export |
 
 `chart` は歴史的にページファイルを持たず、シェルの中へ直接描いています。新しいデザインは `src/app/<name>/page.tsx` に切り出します。
 
 ## 新しいデザインページの追加
 
-次の 3 箇所を揃えます。どれか一つだと、ナビに出ないか型がずれます。
+次の4ファイルを揃えます。型、表示、ナビゲーション、撮影対象は別々に登録する必要があります。
 
 1. **`src/app/<name>/page.tsx` を作る。**  
    シェルから描画するコンポーネントを export する。既存に合わせ、named export（`GooeyToastPage`、`WidgetsContent`）か default export（flow）のどちらかにします。
@@ -89,12 +94,21 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
    - `activeView` のユニオンに `<name>` を足す  
    - ページを import する  
    - 条件分岐に描画を足す  
-   - ヘッダーのパンくず（親ラベルと現在のページ名）を足す
+   - `BreadcrumbLink` の三項演算子に親ラベルを足す
+   - `BreadcrumbPage` の三項演算子に現在のページ名を足す
+
+   **注意:** 描画分岐の最後の else は `McpUiPage` を返します。新しい ID を型に足しても描画分岐を足し忘れると、型エラーにならず MCP-UI が表示されます。パンくずにも既定値があるため、両方のラベルと実際のページ内容を確認します。
 
 3. **`src/components/app-sidebar.tsx` を更新する。**  
    - `AppSidebarProps` の `activeView` に同じ `<name>` を足す  
+   - `AppSidebarProps` の `onViewChange` の引数のユニオンにも同じ `<name>` を足す
    - Pages グループに `SidebarMenuItem` を足し、`onViewChange("<name>")` を呼ぶ  
    - `lucide-react` のアイコンを 1 つ付ける
+
+4. **`scripts/capture-pages.mjs` を更新する。**
+   `views` に `id`、サイドバーのボタン名と一致する `button`、ページ固有の見出しなどの描画を待つ `ready` を足す。チャートやフローは、見出しに加えて図の描画も待ちます。現在の `views` は MCP-UI を含まない6件なので、全7ビューの一覧とは区別します。
+
+追加後は `npm run lint` / `npm run build` / `npm run knip` を通し、サイドバーから新しいページを開いて、親ラベル・現在のページ名・ページ内容を確認します。下記の撮影手順で `npm run screenshots` を実行し、新しい ID の PNG が生成されることも確認します。
 
 置き場所:
 
