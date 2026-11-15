@@ -5,6 +5,7 @@ import { WidgetsContent } from "@/app/widgets/page"
 import FlowPage from "@/app/flow/page"
 import { GooeyToastPage } from "@/app/gooey-toast/page"
 import ToolUiPage from "@/app/tool-ui/page"
+import { MdxPage } from "@/app/mdx/page"
 import { McpUiPage } from "@/app/mcp-ui/page"
 import {
   Breadcrumb,
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
-  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "mcp-ui" | "flow" | "gooey-toast" | "tool-ui">("dashboard")
+  const [activeView, setActiveView] = useState<"dashboard" | "chart" | "widgets" | "mcp-ui" | "flow" | "gooey-toast" | "tool-ui" | "mdx">("dashboard")
 
   return (
     <SidebarProvider>
@@ -35,13 +36,13 @@ export default function Page() {
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
                 <BreadcrumbLink href="#">
-                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : activeView === "gooey-toast" ? "Playground" : activeView === "widgets" ? "Wigggle UI" : "Docs"}
+                  {activeView === "dashboard" ? "Building Your Application" : activeView === "chart" ? "Demos" : activeView === "flow" ? "Demos" : activeView === "gooey-toast" ? "Playground" : activeView === "widgets" ? "Wigggle UI" : activeView === "mdx" ? "Playground" : "Docs"}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : activeView === "widgets" ? "Widgets" : activeView === "tool-ui" ? "Tool UI" : "MCP-UI"}
+                  {activeView === "dashboard" ? "Data Fetching" : activeView === "chart" ? "Chart Demo" : activeView === "flow" ? "React Flow" : activeView === "gooey-toast" ? "Gooey Toast" : activeView === "widgets" ? "Widgets" : activeView === "tool-ui" ? "Tool UI" : activeView === "mdx" ? "MDX Playground" : "MCP-UI"}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
@@ -83,6 +84,8 @@ export default function Page() {
           <div className="flex-1 overflow-auto">
             <ToolUiPage />
           </div>
+        ) : activeView === "mdx" ? (
+          <MdxPage />
         ) : (
           <McpUiPage />
         )}

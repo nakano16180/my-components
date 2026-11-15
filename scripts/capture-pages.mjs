@@ -6,6 +6,14 @@ const outDir = process.env.SCREENSHOT_DIR ?? "screenshots"
 
 const views = [
   {
+    id: "mdx",
+    button: "MDX Playground",
+    ready: async (page) => {
+      await page.getByRole("heading", { level: 1, name: "MDX Playground", exact: true }).waitFor()
+      await page.getByRole("button", { name: "1 増やす", exact: true }).waitFor()
+    },
+  },
+  {
     id: "tool-ui",
     button: "Tool UI",
     ready: (page) =>

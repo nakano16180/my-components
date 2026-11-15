@@ -1,0 +1,54 @@
+# MDX Playground
+
+説明は **Markdown** で、動く UI は **React** で。
+このページ自体を MDX で書き、別ファイルのコンポーネントを埋め込んでいます。
+
+## 説明のすぐそばに、動くデモ
+
+下のボタンで値を変えてみてください。文章と見出しは `content.mdx`、
+カウンターの状態と操作は `counter-demo.tsx` が担当しています。
+
+<CounterDemo />
+
+## 文章と実装を分ける
+
+1. `content.mdx` に、見出し・説明・デモを置く順番を書く。
+2. `counter-demo.tsx` に、React の状態とイベント処理を書く。
+3. `page.tsx` から、MDX の `components` にデモ部品を渡す。
+
+MDX 側では、デモを置きたい場所に JSX を1行書くだけです。
+
+```mdx
+## カウンターを試す
+
+ボタンを押すと値が変わります。
+
+<CounterDemo />
+```
+
+ページ側で部品を登録するので、説明文に状態管理やイベント処理を書く必要はありません。
+
+```tsx
+import Content from "@/app/mdx/content.mdx"
+import { CounterDemo } from "@/app/mdx/counter-demo"
+
+<Content components={{ CounterDemo }} />
+```
+
+## この構成で確認できること
+
+- Markdown の見出し・リスト・コードブロックを React と一緒に表示できる。
+- 文章を変更するときは MDX、操作を変更するときは TSX を編集できる。
+- デモ部品は通常の React コンポーネントとして、単独でも利用できる。
+
+既存ページはそのまま残し、このページだけで MDX を試しています。
+MDX はビルド時に変換します。入力された文章をブラウザで実行するエディタは設けていません。
+
+## 参考資料
+
+- [MDX 公式ドキュメント](https://mdxjs.com/)
+- [Vite への導入](https://mdxjs.com/docs/getting-started/#vite)
+- [コンポーネントの受け渡し](https://mdxjs.com/docs/using-mdx/#components)
+- [構成の参考：ephraimduncan/blocks](https://github.com/ephraimduncan/blocks)
+
+blocks は説明と実装を分ける構成の参考にしています。このページの文章・デモは独自に作成しています。

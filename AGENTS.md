@@ -47,6 +47,7 @@ src/
     gooey-toast/page.tsx   # Gooey Toast
     mcp-ui/page.tsx        # MCP-UI 調査ページ
     tool-ui/page.tsx       # Tool UI 調査ページ
+    mdx/                  # MDX の説明（content.mdx）とデモ（counter-demo.tsx）、表示（page.tsx）
   components/
     app-sidebar.tsx        # サイドバー。Pages がビュー切替
     search-form.tsx
@@ -76,7 +77,7 @@ URL ルーターはありません。`react-router` も入っていません。�
 ビュー ID は dashboard の `useState` と、sidebar の `AppSidebarProps.activeView` / `onViewChange` の引数の計3か所に、同じ文字列ユニオンで書きます。
 
 ```ts
-type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui" | "tool-ui"
+type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui" | "tool-ui" | "mdx"
 ```
 
 | ID | サイドバー | 中身 |
@@ -88,6 +89,7 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "
 | `gooey-toast` | Gooey Toast | `GooeyToastPage`（`src/app/gooey-toast/page.tsx`） |
 | `mcp-ui` | MCP-UI | `McpUiPage`（`src/app/mcp-ui/page.tsx`） |
 | `tool-ui` | Tool UI | `src/app/tool-ui/page.tsx` の default export |
+| `mdx` | MDX Playground | `MdxPage`（`src/app/mdx/page.tsx`） |
 
 `chart` は歴史的にページファイルを持たず、シェルの中へ直接描いています。新しいページは種類にかかわらず `src/app/<name>/page.tsx` に切り出します。
 
@@ -114,7 +116,7 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "
    - `lucide-react` のアイコンを 1 つ付ける
 
 4. **`scripts/capture-pages.mjs` を更新する。**
-   `views` に `id`、サイドバーのボタン名と一致する `button`、ページ固有の見出しなどの描画を待つ `ready` を足す。チャートやフローは、見出しに加えて図の描画も待ちます。現在の `views` は MCP-UI を含まない6件なので、全7ビューの一覧とは区別します。
+   `views` に `id`、サイドバーのボタン名と一致する `button`、ページ固有の見出しなどの描画を待つ `ready` を足す。チャートやフローは、見出しに加えて図の描画も待ちます。現在の `views` は MCP-UI を含まない7件なので、全8ビューの一覧とは区別します。
 
 追加後は `npm run lint` / `npm run build` / `npm run knip` を通し、サイドバーから新しいページを開いて、親ラベル・現在のページ名・ページ内容を確認します。下記の撮影手順で `npm run screenshots` を実行し、新しい ID の PNG が生成されることも確認します。
 
@@ -123,6 +125,10 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "
 - **ページ専用の部品**は `src/app/<name>/` に置き、そのページからだけ import する。
 - **複数ページで使う部品**は `src/components/` に置く。
 - **shadcn のプリミティブ**は `src/components/ui/`。手でコピーせず、下の CLI で追加する。
+
+### MDX の説明とデモ
+
+`src/app/mdx/` が最小例です。説明は `content.mdx`、動く部品は `counter-demo.tsx`、レイアウトと `components` の登録は `page.tsx` に分けます。MDX から使う部品は `page.tsx` で import し、`<Content components={...} />` に渡します。`@mdx-js/rollup` がビルド時に変換し、型は `@types/mdx` を使います。新しい MDX ページも上記4ファイルの登録手順に従います。
 
 ### shadcn コンポーネント
 
