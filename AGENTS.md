@@ -1,14 +1,22 @@
 # AGENTS.md
 
-AI エージェント向けの作業ガイドです。クラウド上の Linux VM でも、オーナーのローカル WSL2 でも、この手順でデザインページを追加します。WSL2 と Windows Chrome の話は、末尾の「ローカル環境（WSL2）」だけにまとめてあります。
+AI エージェント向けの作業ガイドです。クラウド上の Linux VM でも、オーナーのローカル WSL2 でも、この手順でページを追加します。WSL2 と Windows Chrome の話は、末尾の「ローカル環境（WSL2）」だけにまとめてあります。
 
 ## プロジェクト概要
 
-このリポジトリは Kaito（GitHub: nakano16180）個人の、shadcn ベースの UI ページ集です。X で見たデザインをエージェントが集め、候補の issue を立て、PR で再実装し、レビューしてマージする流れで育てます。
+このリポジトリは Kaito（GitHub: nakano16180）個人の、shadcn ベースのデモ・調査ページ集です。ページには次の3種類があります。
+
+| 種類 | 内容 | 例 |
+|---|---|---|
+| X のデザイン再現 | 投稿を参考に、このリポジトリのスタックで見た目を実装し直す | X で見つけた UI の再現 |
+| ライブラリのお試し | ライブラリの機能や操作を実際に試せるデモを作る | React Flow、Gooey Toast |
+| 調査メモ | 技術の概要・仕組み・参考資料をページにまとめる | MCP-UI、Tool UI |
+
+候補の issue を立て、PR でページを追加し、レビューしてマージする流れで育てます。種類ごとの出典は「PR の規約」に従って記載します。
 
 公開リポジトリです。ライセンスは MIT（`LICENSE`）です。扱い方は「出典とライセンス」に従ってください。
 
-1 つの PR では 1 つのデザインだけを扱います。デザインと無関係な機能変更や依存関係の更新は混ぜません。
+1 つの PR では 1 つのデザイン・お試し・調査テーマだけを扱います。そのテーマと無関係な機能変更や依存関係の更新は混ぜません。
 
 ## 技術スタック
 
@@ -37,6 +45,8 @@ src/
     widgets/page.tsx       # WidgetsContent
     flow/page.tsx          # React Flow
     gooey-toast/page.tsx   # Gooey Toast
+    mcp-ui/page.tsx        # MCP-UI 調査ページ
+    tool-ui/page.tsx       # Tool UI 調査ページ
   components/
     app-sidebar.tsx        # サイドバー。Pages がビュー切替
     search-form.tsx
@@ -48,6 +58,7 @@ src/
     utils.ts               # cn()
 components.json            # shadcn CLI の設定
 knip.jsonc                 # 未使用 export の例外（ui プリミティブ）
+scripts/capture-pages.mjs   # スクリーンショットの対象・描画待ち条件
 .github/workflows/ci.yml   # lint / build / knip / screenshots
 ```
 
@@ -62,10 +73,10 @@ URL ルーターはありません。`react-router` も入っていません。�
 3. 表示中のビューは `src/app/dashboard/page.tsx` の `useState` で切り替える。
 4. `src/components/app-sidebar.tsx` が `activeView` と `onViewChange` を受け取り、Pages グループのボタンでビューを変える。
 
-ビュー ID は dashboard と sidebar の両方に、同じ文字列ユニオンで書きます。
+ビュー ID は dashboard の `useState` と、sidebar の `AppSidebarProps.activeView` / `onViewChange` の引数の計3か所に、同じ文字列ユニオンで書きます。
 
 ```ts
-type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
+type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast" | "mcp-ui" | "tool-ui"
 ```
 
 | ID | サイドバー | 中身 |
@@ -75,12 +86,14 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
 | `widgets` | Wigggle Widgets | `WidgetsContent`（`src/app/widgets/page.tsx`） |
 | `flow` | React Flow | `src/app/flow/page.tsx` の default export |
 | `gooey-toast` | Gooey Toast | `GooeyToastPage`（`src/app/gooey-toast/page.tsx`） |
+| `mcp-ui` | MCP-UI | `McpUiPage`（`src/app/mcp-ui/page.tsx`） |
+| `tool-ui` | Tool UI | `src/app/tool-ui/page.tsx` の default export |
 
-`chart` は歴史的にページファイルを持たず、シェルの中へ直接描いています。新しいデザインは `src/app/<name>/page.tsx` に切り出します。
+`chart` は歴史的にページファイルを持たず、シェルの中へ直接描いています。新しいページは種類にかかわらず `src/app/<name>/page.tsx` に切り出します。
 
-## 新しいデザインページの追加
+## 新しいページの追加
 
-次の 3 箇所を揃えます。どれか一つだと、ナビに出ないか型がずれます。
+次の4ファイルを揃えます。型、表示、ナビゲーション、撮影対象は別々に登録する必要があります。
 
 1. **`src/app/<name>/page.tsx` を作る。**  
    シェルから描画するコンポーネントを export する。既存に合わせ、named export（`GooeyToastPage`、`WidgetsContent`）か default export（flow）のどちらかにします。
@@ -89,12 +102,21 @@ type ActiveView = "dashboard" | "chart" | "widgets" | "flow" | "gooey-toast"
    - `activeView` のユニオンに `<name>` を足す  
    - ページを import する  
    - 条件分岐に描画を足す  
-   - ヘッダーのパンくず（親ラベルと現在のページ名）を足す
+   - `BreadcrumbLink` の三項演算子に親ラベルを足す
+   - `BreadcrumbPage` の三項演算子に現在のページ名を足す
+
+   **注意:** 描画分岐の最後の else は `McpUiPage` を返します。新しい ID を型に足しても描画分岐を足し忘れると、型エラーにならず MCP-UI が表示されます。パンくずにも既定値があるため、両方のラベルと実際のページ内容を確認します。
 
 3. **`src/components/app-sidebar.tsx` を更新する。**  
    - `AppSidebarProps` の `activeView` に同じ `<name>` を足す  
+   - `AppSidebarProps` の `onViewChange` の引数のユニオンにも同じ `<name>` を足す
    - Pages グループに `SidebarMenuItem` を足し、`onViewChange("<name>")` を呼ぶ  
    - `lucide-react` のアイコンを 1 つ付ける
+
+4. **`scripts/capture-pages.mjs` を更新する。**
+   `views` に `id`、サイドバーのボタン名と一致する `button`、ページ固有の見出しなどの描画を待つ `ready` を足す。チャートやフローは、見出しに加えて図の描画も待ちます。現在の `views` は MCP-UI を含まない6件なので、全7ビューの一覧とは区別します。
+
+追加後は `npm run lint` / `npm run build` / `npm run knip` を通し、サイドバーから新しいページを開いて、親ラベル・現在のページ名・ページ内容を確認します。下記の撮影手順で `npm run screenshots` を実行し、新しい ID の PNG が生成されることも確認します。
 
 置き場所:
 
@@ -158,16 +180,24 @@ npm run screenshots   # screenshots/*.png
 
 ## PR の規約
 
-- **1 PR につき 1 デザイン。** 関係のないリファクタや依存の更新を混ぜません。
+- **1 PR につき 1 デザイン・お試し・調査テーマ。** 関係のないリファクタや依存の更新を混ぜません。
 - 対応する issue を本文で閉じます。`Closes #n` と書きます。
-- 参照した X の投稿 URL と投稿者（`@handle`）を本文に書きます。
+- ページの種類に応じて、下表の出典を本文に書きます。
 - **UI を変更または追加した PR を開くときも、更新するときも、エージェント自身がスクリーンショットを撮って PR 本文に埋め込む。**
   - 対象は、その PR で変わったページと追加したページ。ページごとに 1 枚、短いキャプションを付ける。
   - 開発サーバー（`npm run dev`、`http://127.0.0.1:5173`）かプレビュー（`npm run preview`、`http://127.0.0.1:4173`）を Playwright で開く。
   - ビューポートはデスクトップ（1280×800）。見出しやチャートなど、そのページの内容が描画されてから撮る。
   - 画像は PR 本文に直接置く。CI の `screenshots` ジョブが残す artifact `page-screenshots` は補助であり、本文の画像の代わりにはしない。
   - UI 以外のファイルだけを変更する PR では、スクリーンショットを省いてよい。
-- タイトルは、追加するデザインが分かる名前にします。
+- タイトルは、追加・変更するページやテーマが分かる名前にします。
+
+| ページの種類 | PR 本文に記載する出典 |
+|---|---|
+| X のデザイン再現 | 参照した X の投稿 URL と投稿者（`@handle`） |
+| ライブラリのお試し | ライブラリ名、実際に検証したバージョン、公式ドキュメントの URL |
+| 調査メモ | 元の issue（`Closes #n`）と、調査に使った公式ドキュメント・リポジトリなどの参考資料 URL |
+
+X の投稿を参照していないお試し・調査メモには、X の URL や投稿者の記載は不要です。複数の種類にまたがるページは、該当する種類それぞれの出典を書きます。文書や CI などページ以外の変更には、ページの種類別の出典欄は不要です。
 
 ## 出典とライセンス
 
@@ -175,7 +205,7 @@ npm run screenshots   # screenshots/*.png
 
 - X で見たデザインは、投稿のコード、SVG、画像、CSS を貼らず、このリポジトリのスタックで見た目を実装し直します。
 - 第三者のコードやライブラリを入れるときは、MIT と両立するライセンスのものに限ります。PR 本文にパッケージ名とライセンス名を書きます。
-- 元にした投稿をクレジットします。投稿 URL と投稿者を PR 本文に残します。ページ内のコメントに残す場合も、同じ URL と投稿者を書きます。
+- X のデザイン再現では、元にした投稿をクレジットします。投稿 URL と投稿者を PR 本文に残します。ページ内のコメントに残す場合も、同じ URL と投稿者を書きます。お試し・調査メモでは「PR の規約」の種類別の出典を残します。
 
 ライセンスが不明なもの、MIT と両立しないものは依存に追加しません。
 
